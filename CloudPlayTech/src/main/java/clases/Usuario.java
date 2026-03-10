@@ -1,15 +1,14 @@
 package clases;
 
 public class Usuario {
-
     protected String nombre;
     protected String correo;
-    protected class Plan;
+    protected Plan plan;
 
-
-    public Usuario(String nombre, String correo) {
+    public Usuario(String nombre, String correo, Plan plan) {
         this.nombre = nombre;
         this.correo = correo;
+        this.plan = plan;
     }
 
     public String getNombre() {
@@ -26,5 +25,13 @@ public class Usuario {
 
     public void setCorreo(String correo) {
         this.correo = correo;
+    }
+
+    public Plan getPlan() {
+        return plan;
+    }
+
+    public void setPlan(Plan plan) {
+        this.plan = plan;
     }
 }
