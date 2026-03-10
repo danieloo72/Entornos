@@ -1,4 +1,4 @@
-package recursos;
+package exceptions;
 
 public class UsuariosInvalidException extends Exception {
     public UsuariosInvalidException(String message) {
