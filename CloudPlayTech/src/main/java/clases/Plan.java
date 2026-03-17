@@ -4,9 +4,9 @@ import java.util.List;
 
 public class Plan {
 
-    private int velocidad_max;
-    private int partidas_activas;
-    private List<String> catalogo;
+    protected int velocidad_max;
+    protected int partidas_activas;
+    protected List<String> catalogo;
 
     public Plan(int velocidad_max, int partidas_activas, List<String> catalogo) {
         this.velocidad_max = velocidad_max;

@@ -3,90 +3,61 @@ package org.example;
 import clases.*;
 import exceptions.UsuariosInvalidException;
 import exceptions.VelocidadInvalidException;
-import recursos.MyScanner;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class GestionUsuario {
 
     protected List<Usuario> listaUsuarios = new ArrayList<>();
-    protected MyScanner sc = new MyScanner();
-    protected Plan basic = new Plan(50, 1, List<>());
-    protected Plan advanced = new Plan(150, 2, List<>());
-    protected Plan premium = new Plan(500, 4, List<String>());
 
-    public void registrarUsuario() throws UsuariosInvalidException {
-        System.out.println("== REGISTRO DE USUARIO ==");
-        String nombre = sc.pideTexto("Nombre: ");
-        String correo = sc.pideTexto("Correo: ");
-        String plan =  sc.pideTexto("Elige un plan(Basic, Advanced, Premium): ");
-
-        if (nombre.isEmpty() || !correo.contains("@")) {
+    public void registrarUsuario(String nombre, String correo, String tipoPlan) throws UsuariosInvalidException {
+        if (nombre == null || nombre.isEmpty() || !correo.contains("@")) {
             throw new UsuariosInvalidException("Datos de usuario no válidos.");
         }
 
-        Usuario nuevo = new Usuario(nombre, correo, Plan);
+        Usuario nuevo = new Usuario(nombre, correo, generarPlanPorTipo(tipoPlan));
         listaUsuarios.add(nuevo);
-        System.out.println("Usuario registrado con éxito.");
     }
 
-    public void cambiarPlan() throws UsuariosInvalidException {
-        String correo = sc.pideTexto("Introduce el correo del usuario: ");
+    public void cambiarPlan(String correo, String nuevoTipo) throws UsuariosInvalidException {
         Usuario user = buscarPorCorreo(correo);
+        if (user == null) {
+            throw new UsuariosInvalidException("Usuario no encontrado.");
+        }
 
-        if (user != null) {
-            System.out.println("Cambiando plan para: " + user.getNombre());
-        } else {
-            System.out.println("Usuario no encontrado.");
+        user.setPlan(generarPlanPorTipo(nuevoTipo));
+    }
+
+    private Plan generarPlanPorTipo(String tipo) {
+        switch (tipo.toLowerCase()) {
+            case "advanced":
+                return new Plan(150, 2, new ArrayList<>());
+            case "premium":
+                return new Plan(500, 4, new ArrayList<>());
+            case "basic":
+            default:
+                return new Plan(50, 1, new ArrayList<>());
         }
     }
 
-    public void verVelocidad() throws VelocidadInvalidException, UsuariosInvalidException {
-        String correo = sc.pideTexto("Introduce el correo: ");
+    public int verVelocidad(String correo) throws VelocidadInvalidException {
         Usuario user = buscarPorCorreo(correo);
-
         if (user == null || user.getPlan() == null) {
             throw new VelocidadInvalidException("No se puede determinar la velocidad.");
         }
-        System.out.println("Velocidad máxima: " + user.getPlan().getVelocidad_max() + " Mbps");
+        return user.getPlan().getVelocidad_max();
     }
 
-    public void buscarUsuarios() throws UsuariosInvalidException {
-        try {
-            String nombre = sc.pideTexto("Nombre a buscar: ");
-            for (Usuario user : listaUsuarios) {
-                if (user.getNombre().equalsIgnoreCase(nombre)) {
-                    System.out.println("Encontrado: " + user.getNombre() + " (" + user.getCorreo() + ")");
-                } else {
-                    throw new UsuariosInvalidException("Usuario no encontrado");
-                }
-            }
-        } catch (UsuariosInvalidException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void listarUsuarios() {
-        System.out.println("== LISTA DE USUARIOS ==");
+    public Usuario buscarPorCorreo(String correo) {
         for (Usuario user : listaUsuarios) {
-            System.out.println(user.getNombre() + " (" + user.getCorreo() + ")");
+            if (user.getCorreo().equalsIgnoreCase(correo)) {
+                return user;
+            }
         }
+        return null;
     }
 
-    public void buscarPorCorreo(String correo) throws UsuariosInvalidException {
-        try {
-            String email = sc.pideTexto("Introduce el correo: ");
-            for (Usuario user : listaUsuarios) {
-                if (user.getCorreo().equalsIgnoreCase(correo)) {
-                    System.out.println("Encontrado: " + user.getCorreo() + " (" + user.getNombre() + ")");
-                } else {
-                    throw new UsuariosInvalidException("Usuario no encontrado");
-                }
-            }
-        } catch (UsuariosInvalidException e) {
-            System.out.println(e.getMessage());
-        }
-        return;
+    public List<Usuario> listarUsuarios() {
+        return new ArrayList<>(listaUsuarios);
     }
 }
