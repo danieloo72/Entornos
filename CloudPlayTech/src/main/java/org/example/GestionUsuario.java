@@ -35,9 +35,9 @@ public class GestionUsuario {
             case "premium":
                 return new Plan(500, 4, new ArrayList<>());
             case "basic":
-            default:
                 return new Plan(50, 1, new ArrayList<>());
         }
+        return null;
     }
 
     public int verVelocidad(String correo) throws VelocidadInvalidException {
